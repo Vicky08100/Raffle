@@ -11,6 +11,9 @@
 (define-constant ERR_WITHDRAWAL_PERIOD_ENDED (err u107))
 (define-constant ERR_LOTTERY_NOT_ENDED (err u108))
 (define-constant ERR_WINNERS_ALREADY_SELECTED (err u109))
+(define-constant ERR_INVALID_DURATION (err u110))
+(define-constant ERR_INVALID_WITHDRAWAL_PERIOD (err u111))
+(define-constant ERR_INVALID_WINNER_ID (err u112))
 
 ;; Data Variables
 (define-data-var is-lottery-active bool false)
@@ -60,6 +63,8 @@
     (asserts! (> winner-count u0) ERR_NO_WINNERS)
     (asserts! (<= fee-percentage u20) ERR_NOT_AUTHORIZED) ;; Max 20% fee
     (asserts! (not (var-get is-lottery-active)) ERR_NOT_AUTHORIZED)
+    (asserts! (> duration-in-blocks u0) ERR_INVALID_DURATION)
+    (asserts! (> withdrawal-period u0) ERR_INVALID_WITHDRAWAL_PERIOD)
     (var-set is-lottery-active true)
     (var-set current-ticket-price ticket-price)
     (var-set current-lottery-pot u0)
@@ -137,7 +142,7 @@
     context))
 
 (define-public (claim-prize (winner-id uint))
-  (let ((winner-info (unwrap! (map-get? winners {winner-id: winner-id}) ERR_NOT_AUTHORIZED))
+  (let ((winner-info (unwrap! (map-get? winners {winner-id: winner-id}) ERR_INVALID_WINNER_ID))
         (winner-address (get address winner-info))
         (claimed (get claimed winner-info)))
     (begin
