@@ -14,7 +14,7 @@
 
 ;; Data Variables
 (define-data-var is-lottery-active bool false)
-(define-data-var current-ticket-price uint u1000000) ;; 1 STXYYY
+(define-data-var current-ticket-price uint u1000000) ;; 1 STX
 (define-data-var current-lottery-pot uint u0)
 (define-data-var total-tickets-sold uint u0)
 (define-data-var number-of-winners uint u1)
@@ -120,10 +120,10 @@
       (asserts! (not (var-get winners-selected)) ERR_WINNERS_ALREADY_SELECTED)
       (asserts! (> total-ticket-count u0) ERR_NO_WINNERS)
       (var-set winners-selected true)
-      (let ((winners-selected (fold select-winner-and-save
+      (let ((selected-winners (fold select-winner-and-save
                                     (list u0 u1 u2 u3 u4 u5 u6 u7 u8 u9)
                                     {random-seed: random-seed, current-winner-id: u0, remaining-winners: winner-count})))
-        (ok (get current-winner-id winners-selected))))))
+        (ok (get current-winner-id selected-winners))))))
 
 (define-private (select-winner-and-save (index uint) (context {random-seed: uint, current-winner-id: uint, remaining-winners: uint}))
   (if (> (get remaining-winners context) u0)
