@@ -149,6 +149,7 @@
       (asserts! (is-eq tx-sender winner-address) ERR_NOT_AUTHORIZED)
       (asserts! (not claimed) ERR_NOT_AUTHORIZED)
       (try! (transfer-prize-to-winner winner-address (var-get prize-per-winner)))
+      (asserts! (< winner-id (var-get number-of-winners)) ERR_INVALID_WINNER_ID)
       (map-set winners {winner-id: winner-id} {address: winner-address, claimed: true})
       (ok true))))
 
